@@ -568,10 +568,10 @@ class Crawler {
       await this.awaitProcess(child_process.spawn("wb-manager", ["reindex", this.params.collection], {stdio: "inherit", cwd: this.params.cwd}));
     }
 
-    if (this.params.generateWACZ && (this.exitCode === 0 || this.finalExit || this.sizeExceeded)) {
+    if (this.params.generateWACZ && (this.exitCode === 0 || this.finalExit || this.params.completePartial || this.sizeExceeded)) {
       await this.generateWACZ();
 
-      if (this.sizeExceeded) {
+      if (this.sizeExceeded && !this.params.completePartial) {
         console.log(`Clearing ${this.collDir} before exit`);
         try {
           fs.rmSync(this.collDir, { recursive: true, force: true });
